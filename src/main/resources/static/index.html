@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere - Modern E-Commerce Platform</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo" onclick="switchView('home')">
+            <i class="fa-solid fa-bag-shopping"></i> ShopSphere
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" onclick="switchView('home')" id="nav-home" class="active">Home</a></li>
+            <li><a href="#" onclick="switchView('orders')" id="nav-orders">My Orders</a></li>
+            <li><a href="#" onclick="switchView('admin')" id="nav-admin">Admin Dashboard</a></li>
+            <li id="auth-link-container">
+                <a href="#" onclick="openAuthModal('login')" id="nav-login">Login</a>
+            </li>
+            <li>
+                <button class="cart-btn" onclick="openCartModal()">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Dynamic Container -->
+    <main id="app-container">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="features-badges">
+                <span class="feature-badge"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> 24h Express Delivery</span>
+                <span class="feature-badge"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Secure Payment</span>
+                <span class="feature-badge"><i class="fa-solid fa-star" style="color: #6366f1;"></i> 4.9/5 Rating</span>
+            </div>
+            <h1>Next-Gen E-Commerce Experience</h1>
+            <p>Discover handpicked tech gadgets, apparel, and lifestyle products with instant checkout & verified seller trust.</p>
+        </section>
+
+        <!-- Filter & Search Controls -->
+        <div class="controls-bar">
+            <input type="text" id="search-input" class="control-input" placeholder="Search products..." oninput="handleSearch()" style="min-width: 240px;">
+            <select id="category-select" class="control-input" onchange="handleFilter()">
+                <option value="">All Categories</option>
+            </select>
+            <input type="number" id="min-price-input" class="control-input" placeholder="Min Price ($)" style="width: 130px;" onchange="handleFilter()">
+            <input type="number" id="max-price-input" class="control-input" placeholder="Max Price ($)" style="width: 130px;" onchange="handleFilter()">
+            <select id="sort-select" class="control-input" onchange="handleFilter()">
+                <option value="createdAt:desc">Newest First</option>
+                <option value="price:asc">Price: Low to High</option>
+                <option value="price:desc">Price: High to Low</option>
+            </select>
+        </div>
+
+        <!-- Product Grid View -->
+        <div class="product-grid" id="product-list">
+            <!-- Dynamically populated via app.js -->
+        </div>
+    </main>
+
+    <!-- Auth Modal (Login / Register) -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('auth-modal')">&times;</button>
+            <h2 id="auth-modal-title" style="margin-bottom: 1.5rem; font-family: var(--font-heading);">User Login</h2>
+            
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                <div id="register-fields" style="display: none;">
+                    <label style="font-size: 0.85rem; color: var(--text-muted);">Full Name</label>
+                    <input type="text" id="auth-name" class="control-input" style="width: 100%; margin-bottom: 1rem;">
+                    
+                    <label style="font-size: 0.85rem; color: var(--text-muted);">Phone Number</label>
+                    <input type="text" id="auth-phone" class="control-input" style="width: 100%; margin-bottom: 1rem;">
+                </div>
+
+                <label style="font-size: 0.85rem; color: var(--text-muted);">Email Address</label>
+                <input type="email" id="auth-email" class="control-input" style="width: 100%; margin-bottom: 1rem;" required>
+
+                <label style="font-size: 0.85rem; color: var(--text-muted);">Password</label>
+                <input type="password" id="auth-password" class="control-input" style="width: 100%; margin-bottom: 1rem;" required>
+
+                <button type="submit" class="btn-primary" id="auth-submit-btn">Login</button>
+            </form>
+
+            <p style="margin-top: 1.25rem; font-size: 0.875rem; color: var(--text-muted); text-align: center;">
+                <span id="auth-toggle-text">Don't have an account?</span> 
+                <a href="#" onclick="toggleAuthMode()" id="auth-toggle-link" style="color: #818cf8; font-weight: 700;">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="close-btn" onclick="closeModal('cart-modal')">&times;</button>
+            <h2 style="font-family: var(--font-heading);">Your Shopping Cart</h2>
+            
+            <div id="cart-items-container" style="margin: 1.5rem 0; max-height: 350px; overflow-y: auto;">
+                <!-- Dynamically populated cart items -->
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <span style="font-size: 1.2rem; font-weight: 800;">Total:</span>
+                <span style="font-size: 1.6rem; font-weight: 900; color: #818cf8;" id="cart-total-amount">$0.00</span>
+            </div>
+
+            <button class="btn-primary" onclick="proceedToCheckout()" id="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
